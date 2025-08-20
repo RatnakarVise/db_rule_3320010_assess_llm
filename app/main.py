@@ -146,7 +146,7 @@ def llm_assess_and_prompt(unit: Unit) -> Dict[str, str]:
 
 # ===== API =====
 @app.post("/assess-copa-3320010")
-def assess_copa(units: List[Unit]) -> List[Dict[str, Any]]:
+async def assess_copa(units: List[Unit]) -> List[Dict[str, Any]]:
     out = []
     for u in units:
         obj = u.model_dump()
