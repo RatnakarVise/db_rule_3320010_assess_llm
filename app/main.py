@@ -16,7 +16,7 @@ if openai_api_key:
     os.environ["OPENAI_API_KEY"] = openai_api_key
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-nano")
 
 # LangChain
 from langchain_openai import ChatOpenAI
@@ -81,7 +81,15 @@ def summarize_copa(unit: Unit) -> Dict[str, Any]:
     }
 
 # ===== Prompt for CO-PA RKEOBJNR fix =====
-SYSTEM_MSG = "You are a precise ABAP reviewer familiar with SAP Note 3320010. Output strict JSON only."
+SYSTEM_MSG = """You are a senior ABAP expert. Output ONLY JSON as response.
+In llm_prompt: For every provided payload item,
+write a bullet point that:
+- Displays the exact offending code
+- Explains the necessary action to fix the offset error using the provided .suggestion text (if available).
+- Bullet points should contain both offending code snippet and the fix (no numbering or referencing like "snippet[1]": display the code inline).
+- Do NOT omit any snippet; all must be covered, no matter how many there are.
+- Only show actual ABAP code for each snippet with its specific action.
+""".strip()
 
 USER_TEMPLATE = """
 You are assessing ABAP code for CO-PA (Profitability Analysis) changes per SAP Note 3320010.
