@@ -1,7 +1,7 @@
 # app_assess_copa_3320010.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import os, json
 from dotenv import load_dotenv
 # ---- Env setup ----
@@ -24,6 +24,11 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 
 app = FastAPI(title="SAP Note 3320010 CO-PA Type Change Assessment")
+# --- SNIPPET HELPER ---
+def snippet_at(text: str, start: int, end: int) -> str:
+    s = max(0, start - 60)
+    e = min(len(text), end + 60)
+    return text[s:e].replace("\n", "\\n")
 
 # ===== Models =====
 class CopaUsage(BaseModel):
@@ -33,6 +38,7 @@ class CopaUsage(BaseModel):
     used_fields: List[str]
     suggested_fields: List[str]
     suggested_statement: str
+    snippet: Optional[str] = None   # 👈 added snippet support
 
 class Unit(BaseModel):
     pgm_name: str
